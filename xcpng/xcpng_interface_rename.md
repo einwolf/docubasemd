@@ -52,9 +52,11 @@ interface-rename --update eth4=<eth2 mac> eth5=<eth3 mac>
 INFO     [2024-12-01 10:00:02] Performing manual update of rules.  Not actually renaming interfaces
 INFO     [2024-12-01 10:00:02] All done
 
+# List physical interfaces for all pools. (Check host uuid)
+xe pif-list
+
 # Forget the xcp-ng physical interface config for eth2 and eth3
 # xe will tab complete uuids
-xe pif-list
 xe pif-forget uuid=<eth2 uuid>
 xe pif-forget uuid=<eth3 uuid>
 # No output
@@ -76,6 +78,12 @@ xe pif-introduce device=eth5 host-uuid=<host uuid> mac=<eth5 mac>
 # Prints pif uuid
 
 # The eth2 and eth3 pool wide networks get converted to private networks
-network-list
+xe network-list
 xe network-destroy uuid=<network uuid>
+```
+
+```bash
+# After reboot some pifs were not attached.
+# They could not be configured for static/dhcp ips in xoa.
+xe pif-plug uuid=<pif uuid>
 ```

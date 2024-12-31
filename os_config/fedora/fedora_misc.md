@@ -11,7 +11,7 @@ grubby --update-kernel=ALL --args="mitigations=off"
 Rebuild initramfs
 
 ```bash
-dracut --force --regenerate-all
+dracut -v --force --regenerate-all
 ```
 
 Make samba shares show up in windows networking
@@ -20,4 +20,17 @@ Make samba shares show up in windows networking
 # Install Web Services Dynamic Discovery
 dnf install -y wsdd
 systemctl enable --now wsdd
+```
+
+Update rescue kernel
+
+```bash
+# Reinstalls kernel
+rm -f /boot/*-rescue-*
+kernel-install add $(uname -r) /lib/modules/$(uname -r)/vmlinuz
+
+# Might be better
+grubby \
+--update-kernel="/boot/vmlinuz-0-rescue-$(cat /etc/machine-id)" \
+--remove-args="rhgb quiet" --args="systemd.unit=rescue.target"
 ```

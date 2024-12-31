@@ -130,7 +130,7 @@ http://localhost:8081/repository/docker-repo1/
 
 ```bash
 cat > /etc/containers/registries.conf.d/dockerhost1.conf << EOF
-location = "dockerhost1.ioncollector.com"
+location = "dockerhost1"
 insecure = true
 blocked = false
 EOF
@@ -140,8 +140,8 @@ EOF
 # Test
 # Authentication need for push
 # What's with not honoring insecure = true
-podman login --tls-verify=false dockerrepo1.ioncollector.com:58081
+podman login --tls-verify=false dockerrepo1:58081
 podman pull quay.io/podman/hello
-podman tag quay.io/podman/hello:latest dockerrepo1.ioncollector.com:58081/docker-repo1/hello:latest
-podman push --tls-verify=false dockerrepo1.ioncollector.com:58081/docker-repo1/hello:latest
+podman tag quay.io/podman/hello:latest dockerrepo1:58081/docker-repo1/hello:latest
+podman push --tls-verify=false dockerrepo1:58081/docker-repo1/hello:latest
 ```

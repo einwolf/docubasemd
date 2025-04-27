@@ -11,10 +11,15 @@ https://github.com/torvalds/linux/blob/v6.14/net/netlabel/netlabel_calipso.c
 The code tries to match sensitivities and categories to DOI interpretation
 through CIPSO configuration. It errors if it can't do that.
 
-For CIPSO type 1 in passthrough category > 239 can't map to DOI.
-It error that way.
-
+CIPSO type 1 in passthrough mode category > 239 can't map to DOI values.
 For trans modes it can take anything that is valid.
+
+Generally, it appears to take the category in low to high (type 1 or 2) or
+high to low (type 5) and tries to add category or category range one at a time.
+It errors when the header gets larger than the IP header size limit.
+
+THe CIPSO type 1 error isn't a "category number too big" error.
+It's a "tried to add 241" categories error.
 
 https://github.com/torvalds/linux/blob/v6.14/net/ipv4/cipso_ipv4.c
 

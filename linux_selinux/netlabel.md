@@ -6,6 +6,73 @@ dnf install -y netlabel_tools setools-console policycoreutils-python-utils
 
 Note netlabel_peer_type selinux attribute.
 
+## Selinux type range
+
+Sensitivity is 16 values s0 (low) to s15 (high).
+
+Category is 1024 values c0 to c1023. This is a multi set field so c5-c19 and c15,c62 are valid.
+
+## CIPSO tag types
+
+Commercial IP Security option (CIPSO)
+
+Netlabel is tied to CIPSO tag types.
+[CIPSO draft RFC](https://www.ietf.org/archive/id/draft-ietf-cipso-ipsecurity-01.txt)
+See Domain of Interpretation (DOI) section to set tag type.
+
+DOI is unsigned 32 bit integer 0-4,294,967,295. 0 is reserved.
+
+*Compared to SElinux*
+
+DOI trans is probably needed to use sensitivity 16-255 and category > 1023 to
+bring them into SElinux range.
+
+No description on what happens if categories do not fit in the type label.
+
+*CIPSO Type 1*
+
+Sensivity is an unsigned 8 bit integer 0-255. 0 is low and 255 is high.
+
+Category is a boolean bitmap field with max length 8 octets. This allows 0-239.
+SElinux category c240 and up are sliently dropped.
+
+*CIPSO Type 2*
+
+Sensivity is an unsigned 8 bit integer 0-255. 0 is low and 255 is high.
+
+Category is a unsigned 16 bit integer 0-65534. 65535 is reserved.
+1 to 15 categories may be used. I expect the 16th category and up to be silently dropped.
+Categories must be listed in ascending order.
+
+*CIPSO Type 5*
+
+Sensivity is an unsigned 8 bit integer 0-255. 0 is low and 255 is high.
+
+Category is in pairs of unsigned 16 bit integers specified high to low.
+There is a max of 7 category pairs.
+Categories must be listed in decending order.
+The last category's end is assumed to be 0 and is implicit.
+
+Not sure what happens if more ranges than possible are needed.
+
+## CALIPSO tag types
+
+Common Architecture Label IPv6 Security Option
+[CALIPSO RFC](https://www.rfc-editor.org/rfc/rfc5570.html)
+
+There is one format.
+
+Maximum compartment length is measured in unsigned 8 bit octet representing 0-255 32 bit words.
+There's a statement on ipv6 64 bit padding to reconsile the 32 bit length vs 64 bit compartment bitmap.
+
+Sensivity is an unsigned 8 bit integer 0-255. 0 is low and 255 is high.
+
+Category is called compartment and is a bitmap of 64 bit words. Number of words is in compartment length.
+
+Releasability is included in the compartment field as inverted compartments.
+What does that mean? How are category or releasability type determined in the same bitmap?
+Wait, the RFC says it's not described on purpose. So it's basically a vendor specific field.
+
 ## getpeercon_server
 
 ```bash

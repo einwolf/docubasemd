@@ -6,9 +6,13 @@ https://github.com/quay/quay/releases
 
 Container images
 
+https://quay.io/repository/projectquay/
+
 https://quay.io/repository/projectquay/quay
 
-## Local Install
+https://quay.io/repository/projectquay/clair
+
+## Development Local Install
 
 Local install requires building quay plus configuring redis and postgresql.
 
@@ -18,15 +22,17 @@ Development install
 
 https://github.com/quay/quay/blob/master/docs/getting-started.md#running-quay-for-development
 
-## Container Install
-
-Project quay is best run from containers.
+The local-dev system uses a docker compose file.
 
 https://github.com/quay/quay/blob/master/docker-compose.yaml
 
+## Container Install
+
+The quay docs "proof of concept" install uses a multi container podman setup.
+
 https://docs.projectquay.io/deploy_quay.html
 
-https://docs.redhat.com/en/documentation/red_hat_quay/3.13/html/proof_of_concept_-_deploying_red_hat_quay/index
+https://docs.redhat.com/en/documentation/red_hat_quay/3.15/html/proof_of_concept_-_deploying_red_hat_quay/index
 
 ## Podman
 
@@ -35,8 +41,8 @@ https://docs.redhat.com/en/documentation/red_hat_quay/3.13/html/proof_of_concept
 # $QUAY is /opt/quay
 
 cd /opt
-mkdir quay-3.13.0
-ln -s quay-3.13.0 quay
+mkdir quay-3.15.0
+ln -s quay-3.15.0 quay
 mkdir -p quay/postgres-quay
 mkdir -p quay/config
 mkdir -p quay/storage
@@ -68,11 +74,14 @@ podman run -d --rm -p 8082:8080 -p 8482:8443  \
    --name=quay \
    -v /opt/quay/config:/conf/stack:Z \
    -v /opt/quay/storage:/datastorage:Z \
-   quay.io/projectquay/quay:v3.13.0
+   quay.io/projectquay/quay:v3.15.0
 
 ```
 
 ## Podman-compose
+
+Use the local-dev docker-compose but use images from quay.io instead of compiling.
+Also going to use podman kube play instead of docker compose.
 
 https://github.com/quay/quay/blob/master/docker-compose.yaml
 

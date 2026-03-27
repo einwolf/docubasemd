@@ -10,6 +10,8 @@ RDP and VNC can be used for either system or user modes.
 
 Enable rdp for gdm and all users.
 
+grd hooks into gdm. Gdm must be running. multi-user.target will not work.
+
 ```bash
 # Key must be readable by gnome-remote-desktop-user.
 # A lot of error about TPM not working.
@@ -31,6 +33,26 @@ grdctl --system rdp disable-view-only
 ```bash
 # Enable system remote login service and GDM.
 systemctl enable --now gdm.service
+systemctl enable --now gnome-remote-desktop.service
+```
+
+### Summary enable system mode
+
+```bash
+# Brief enable system mode
+# ~gnome-remote-desktop = /var/lib/gnome-remote-desktop/
+mkdir -p ~gnome-remote-desktop/.local/share/gnome-remote-desktop/
+chown -Rv gnome-remote-desktop:gnome-remote-desktop ~gnome-remote-desktop/.local
+openssl req -new -newkey rsa:4096 -days 3600 -nodes -x509 -subj /C=US/ST=NONE/L=NONE/O=GNOME/CN=gnome.org -out ~gnome-remote-desktop/.local/share/gnome-remote-desktop/tls.crt -keyout ~gnome-remote-desktop/.local/share/gnome-remote-desktop/tls.key
+chown -Rv gnome-remote-desktop:gnome-remote-desktop ~gnome-remote-desktop/.local/share/gnome-remote-desktop
+chmod -v 0600 ~gnome-remote-desktop/.local/share/gnome-remote-desktop/tls.key
+
+grdctl --system rdp set-tls-key ~gnome-remote-desktop/.local/share/gnome-remote-desktop/tls.key
+grdctl --system rdp set-tls-cert ~gnome-remote-desktop/.local/share/gnome-remote-desktop/tls.crt
+grdctl --system rdp set-credentials rdpuser rdppassword
+grdctl --system rdp enable
+grdctl --system rdp disable-view-only
+
 systemctl enable --now gnome-remote-desktop.service
 ```
 
